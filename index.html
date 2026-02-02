@@ -240,7 +240,7 @@ function startGame(){
   timeSpan.innerText=time;
   gameArea.innerHTML="";
 
-  gameInterval=setInterval(spawnHeart,900);
+  gameInterval=setInterval(spawnHeart,600);
   timerInterval=setInterval(()=>{
     time--;
     timeSpan.innerText=time;
@@ -262,7 +262,7 @@ function spawnHeart(){
     score++;
     scoreSpan.innerText=score;
     h.remove();
-    if(score===7){
+    if(score===29){
       birthdayUnlocked=true;
       clearInterval(gameInterval);
       clearInterval(timerInterval);
