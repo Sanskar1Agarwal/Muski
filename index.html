@@ -66,27 +66,6 @@ p{max-width:620px;margin:auto;font-size:1.1em;}
   100%{transform:translateY(-10vh) rotate(360deg);opacity:0;}
 }
 
-/* Cards */
-.cards{
-  display:flex;
-  justify-content:center;
-  gap:20px;
-  flex-wrap:wrap;
-}
-.card{
-  width:200px;
-  height:120px;
-  background:#ff758c;
-  border-radius:18px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  font-weight:bold;
-  transition:transform 0.3s;
-}
-.card:hover{transform:scale(1.1);}
-
 /* Game area */
 #gameArea{
   position:relative;
@@ -127,64 +106,6 @@ p{max-width:620px;margin:auto;font-size:1.1em;}
   z-index:100;
 }
 
-/* Birthday cake */
-#cake{
-  position:relative;
-  margin:30px auto;
-  width:200px;
-  height:120px;
-  z-index:10;
-  display:none; /* show after birthday page loads */
-}
-.cake-layer{
-  position:absolute;
-  width:100%;
-  height:60px;
-  background:#ff4d6d;
-  border-radius:20px 20px 0 0;
-  bottom:0;
-  left:0;
-  z-index:1;
-}
-.cake-layer:nth-child(2){height:40px; bottom:60px; background:#ff758c; z-index:2;}
-.cake-layer:nth-child(3){height:20px; bottom:100px; background:#ff99aa; z-index:3;}
-
-/* Cake slices overlay */
-.slice{
-  position:absolute;
-  width:33.33%;
-  height:100%;
-  background:rgba(0,0,0,0);
-  cursor:pointer;
-  z-index:20;
-}
-.slice:nth-child(1){left:0;}
-.slice:nth-child(2){left:33.33%;}
-.slice:nth-child(3){left:66.66%;}
-
-/* Slice cut animation */
-.cut{
-  animation:cutSlice 0.8s forwards;
-}
-@keyframes cutSlice{
-  0%{transform:translateY(0) rotate(0deg); opacity:1;}
-  100%{transform:translateY(150px) rotate(30deg); opacity:0;}
-}
-
-/* Confetti */
-.confetti{
-  position:absolute;
-  width:6px;
-  height:6px;
-  background:hsl(0,100%,50%);
-  border-radius:50%;
-  animation:confettiFall 1s linear forwards;
-}
-@keyframes confettiFall{
-  0%{opacity:1; transform:translateY(0);}
-  100%{opacity:0; transform:translateY(150px);}
-}
-
 /* Birthday image */
 .birthday-img{
   width:250px;
@@ -204,6 +125,113 @@ p{max-width:620px;margin:auto;font-size:1.1em;}
   font-weight:bold;
   cursor:pointer;
 }
+
+/* Cake container */
+#cakeContainer{
+  position:relative;
+  width:250px;
+  height:250px;
+  margin:30px auto;
+  display:none;
+}
+
+/* Cake layers */
+.cake-layer{
+  position:absolute;
+  width:100%;
+  border-radius:50%;
+  left:0;
+}
+.cake-bottom{
+  height:100px;
+  background:#ff4d6d;
+  bottom:0;
+  z-index:1;
+}
+.cake-middle{
+  height:70px;
+  background:#ff758c;
+  bottom:100px;
+  z-index:2;
+}
+.cake-top{
+  height:50px;
+  background:#ff99aa;
+  bottom:170px;
+  z-index:3;
+}
+
+/* Icing */
+.icing{
+  position:absolute;
+  width:100%;
+  height:20px;
+  background:white;
+  border-radius:50%;
+  top:-10px;
+}
+
+/* Candle */
+#candle{
+  position:absolute;
+  width:10px;
+  height:40px;
+  background:yellow;
+  top:-50px;
+  left:50%;
+  transform:translateX(-50%);
+  border-radius:3px;
+}
+#flame{
+  position:absolute;
+  width:10px;
+  height:10px;
+  background:orange;
+  top:-10px;
+  left:0;
+  border-radius:50%;
+  animation:flame 0.5s infinite alternate;
+}
+@keyframes flame{
+  0%{transform:translateY(0);}
+  100%{transform:translateY(-5px);}
+}
+
+/* Cake slices as clip-paths */
+.slice{
+  position:absolute;
+  width:100%;
+  height:100%;
+  clip-path: polygon(50% 50%, 100% 0, 100% 100%);
+  cursor:pointer;
+  z-index:5;
+}
+.slice:nth-child(1){clip-path: polygon(50% 50%, 100% 0, 100% 100%);}
+.slice:nth-child(2){clip-path: polygon(50% 50%, 0 0, 0 100%);}
+.slice:nth-child(3){clip-path: polygon(50% 50%, 100% 0, 0 0);}
+
+/* Slice cut animation */
+.cut{
+  animation:cutSlice 0.8s forwards;
+}
+@keyframes cutSlice{
+  0%{transform:translateY(0) rotate(0deg); opacity:1;}
+  100%{transform:translateY(150px) rotate(30deg); opacity:0;}
+}
+
+/* Confetti */
+.confetti{
+  position:absolute;
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  animation:confettiFall 1s linear forwards;
+}
+@keyframes confettiFall{
+  0%{opacity:1; transform:translateY(0);}
+  100%{opacity:0; transform:translateY(150px);}
+}
+
 </style>
 </head>
 <body>
@@ -236,7 +264,7 @@ p{max-width:620px;margin:auto;font-size:1.1em;}
   <p>Score: <span id="score">0</span> / 7</p>
 </section>
 
-<!-- AFTER GAME: BIRTHDAY IMAGE -->
+<!-- BIRTHDAY IMAGE AFTER GAME -->
 <section id="s3">
   <h1>🎉 Happy Birthday Muskan! 🎉</h1>
   <img src="muskan.jpg" class="birthday-img" alt="Muskan">
@@ -247,10 +275,11 @@ p{max-width:620px;margin:auto;font-size:1.1em;}
 <!-- BIRTHDAY PAGE -->
 <section id="s4">
   <h1 class="glow">🎉 Cake Time! 🎂</h1>
-  <div id="cake">
-    <div class="cake-layer"></div>
-    <div class="cake-layer"></div>
-    <div class="cake-layer"></div>
+  <div id="cakeContainer">
+    <div class="cake-layer cake-bottom"><div class="icing"></div></div>
+    <div class="cake-layer cake-middle"><div class="icing"></div></div>
+    <div class="cake-layer cake-top"><div class="icing"></div></div>
+    <div id="candle"><div id="flame"></div></div>
     <div class="slice" onclick="cutSlice(this)"></div>
     <div class="slice" onclick="cutSlice(this)"></div>
     <div class="slice" onclick="cutSlice(this)"></div>
@@ -262,12 +291,9 @@ p{max-width:620px;margin:auto;font-size:1.1em;}
 let music=document.getElementById("bgm"); music.volume=0;
 function fadeInMusic(){let v=0; let fade=setInterval(()=>{if(v>=1){clearInterval(fade);} music.volume=v; v+=0.05;},200);}
 function toggleMusic(){music.muted=!music.muted; muteBtn.innerText=music.muted?"🔇":"🔊";}
-function checkCode(){
-  if(code.value==="0802"){music.play(); fadeInMusic(); next(1);}
-  else alert("Wrong code ❌");
-}
+function checkCode(){if(code.value==="0802"){music.play(); fadeInMusic(); next(1);}else alert("Wrong code ❌");}
 
-/* Section navigation */
+/* Navigation */
 function next(n){
   document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
   document.getElementById("s"+n).classList.add("active");
@@ -275,7 +301,7 @@ function next(n){
   if(n===4) showCake();
 }
 
-/* Floating hearts background */
+/* Floating hearts */
 setInterval(()=>{
   let h=document.createElement("div");
   h.className="heart";
@@ -286,7 +312,7 @@ setInterval(()=>{
   setTimeout(()=>h.remove(),6000);
 },350);
 
-/* Countdown to 08/02/2026 */
+/* Countdown */
 const target=new Date("2026-02-08T00:00:00").getTime();
 setInterval(()=>{
   let d=target-new Date().getTime();
@@ -298,53 +324,43 @@ setInterval(()=>{
     Math.floor((d%60000)/1000)+"s";
 },1000);
 
-/* Hard mode game */
+/* Hard-mode game */
 let score=0,time=30,gameInterval,timerInterval;
 function startGame(){
   score=0; time=30;
   document.getElementById("score").innerText=score;
   document.getElementById("time").innerText=time;
   gameArea.innerHTML="";
-  gameInterval=setInterval(spawnHeart,500); // spawn faster
+  gameInterval=setInterval(spawnHeart,500);
   timerInterval=setInterval(()=>{
     time--;
     document.getElementById("time").innerText=time;
-    if(time<=0){ clearInterval(gameInterval); clearInterval(timerInterval); alert("Time up! Try again 💕"); }
+    if(time<=0){clearInterval(gameInterval); clearInterval(timerInterval); alert("Time up! Try again 💕");}
   },1000);
 }
-
 function spawnHeart(){
   let h=document.createElement("div");
   h.className="gameHeart";
   h.innerHTML="💖";
   h.style.left=Math.random()*85+"%";
   h.style.top=Math.random()*75+"%";
-
   let dx=(Math.random()-0.5)*15;
   let dy=(Math.random()-0.5)*15;
-  let moveInterval=setInterval(()=>{
-    h.style.left=(h.offsetLeft+dx)+"px";
-    h.style.top=(h.offsetTop+dy)+"px";
-  },50);
-
+  let moveInterval=setInterval(()=>{h.style.left=(h.offsetLeft+dx)+"px"; h.style.top=(h.offsetTop+dy)+"px";},50);
   h.onclick=()=>{
     score++;
     document.getElementById("score").innerText=score;
     clearInterval(moveInterval);
     h.remove();
-    if(score===7){ 
-      clearInterval(gameInterval); clearInterval(timerInterval); 
-      document.getElementById("s3").querySelector("#birthdayBtn").style.display="inline-block";
-      next(3); // show birthday image
-    }
+    if(score===7){clearInterval(gameInterval); clearInterval(timerInterval); document.getElementById("birthdayBtn").style.display="inline-block"; next(3);}
   };
   gameArea.appendChild(h);
-  setTimeout(()=>{ clearInterval(moveInterval); h.remove(); },1500);
+  setTimeout(()=>{clearInterval(moveInterval); h.remove();},1500);
 }
 
 /* Fireworks */
 function fireworks(){
-  let fw=setInterval(()=>{
+  setInterval(()=>{
     let f=document.createElement("div");
     f.className="firework";
     f.style.left=Math.random()*100+"vw";
@@ -353,19 +369,15 @@ function fireworks(){
     document.body.appendChild(f);
     setTimeout(()=>f.remove(),1200);
   },200);
-  return fw;
 }
 
-/* Birthday Cake */
+/* Realistic cake */
 let cakeSlicesCut=0;
 function showCake(){
-  const cake=document.getElementById("cake");
+  const cake=document.getElementById("cakeContainer");
   cake.style.display="block";
   cakeSlicesCut=0;
-  document.querySelectorAll("#cake .slice").forEach(s=>{
-    s.classList.remove("cut");
-    s.style.pointerEvents="auto";
-  });
+  document.querySelectorAll("#cakeContainer .slice").forEach(s=>{s.classList.remove("cut"); s.style.pointerEvents="auto";});
 }
 
 function cutSlice(slice){
@@ -373,9 +385,7 @@ function cutSlice(slice){
   slice.classList.add("cut");
   cakeSlicesCut++;
   createConfetti(slice);
-  if(cakeSlicesCut===3){ // all slices cut
-    fireworks(); // celebrate
-  }
+  if(cakeSlicesCut===3) fireworks();
 }
 
 function createConfetti(slice){
@@ -385,7 +395,7 @@ function createConfetti(slice){
     c.style.left=(slice.offsetLeft + Math.random()*slice.offsetWidth)+"px";
     c.style.top=(slice.offsetTop)+"px";
     c.style.background=`hsl(${Math.random()*360},100%,50%)`;
-    document.getElementById("cake").appendChild(c);
+    document.getElementById("cakeContainer").appendChild(c);
     setTimeout(()=>c.remove(),1000);
   }
 }
