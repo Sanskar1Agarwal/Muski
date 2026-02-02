@@ -133,6 +133,7 @@ p{max-width:620px;margin:auto;font-size:1.1em;}
   margin:30px auto;
   width:200px;
   height:120px;
+  z-index:10;
 }
 .cake-layer{
   position:absolute;
@@ -154,6 +155,7 @@ p{max-width:620px;margin:auto;font-size:1.1em;}
   height:100%;
   background:rgba(0,0,0,0);
   cursor:pointer;
+  z-index:20;
 }
 .slice:nth-child(1){left:0;}
 .slice:nth-child(2){left:33.33%;}
@@ -257,7 +259,7 @@ function next(n){
   document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
   document.getElementById("s"+n).classList.add("active");
   if(n===2) startGame();
-  if(n===4) fireworks();
+  if(n===4){ fireworks(); initBirthdayPage(); }
 }
 
 /* Floating hearts */
@@ -268,17 +270,56 @@ const target=new Date("2026-02-08T00:00:00").getTime();
 setInterval(()=>{let d=target-new Date().getTime(); if(d<=0){next(4); return;} timer.innerText=
   Math.floor(d/86400000)+"d "+Math.floor((d%86400000)/3600000)+"h "+Math.floor((d%3600000)/60000)+"m "+Math.floor((d%60000)/1000)+"s";},1000);
 
-/* Game */
+/* Game - Hard mode */
 let score=0,time=30,gameInterval,timerInterval;
-function startGame(){score=0; time=30; document.getElementById("score").innerText=score; document.getElementById("time").innerText=time; gameArea.innerHTML="";
-gameInterval=setInterval(spawnHeart,900); timerInterval=setInterval(()=>{time--; document.getElementById("time").innerText=time; if(time<=0){clearInterval(gameInterval); clearInterval(timerInterval); alert("Time up! Try again 💕");}},1000);}
-function spawnHeart(){let h=document.createElement("div"); h.className="gameHeart"; h.innerHTML="💖"; h.style.left=Math.random()*85+"%"; h.style.top=Math.random()*75+"%";
-h.onclick=()=>{score++; document.getElementById("score").innerText=score; h.remove(); if(score===7){clearInterval(gameInterval); clearInterval(timerInterval); next(3);}}; gameArea.appendChild(h); setTimeout(()=>h.remove(),1500);}
+function startGame(){
+  score=0; time=30;
+  document.getElementById("score").innerText=score;
+  document.getElementById("time").innerText=time;
+  gameArea.innerHTML="";
+  gameInterval=setInterval(spawnHeart,600); // faster spawn
+  timerInterval=setInterval(()=>{
+    time--;
+    document.getElementById("time").innerText=time;
+    if(time<=0){ clearInterval(gameInterval); clearInterval(timerInterval); alert("Time up! Try again 💕"); }
+  },1000);
+}
+
+function spawnHeart(){
+  let h=document.createElement("div");
+  h.className="gameHeart";
+  h.innerHTML="💖";
+  h.style.left=Math.random()*85+"%";
+  h.style.top=Math.random()*75+"%";
+  // Hard mode: heart moves randomly
+  let dx=(Math.random()-0.5)*10;
+  let dy=(Math.random()-0.5)*10;
+  let speedInterval=setInterval(()=>{
+    h.style.left=(h.offsetLeft+dx)+"px";
+    h.style.top=(h.offsetTop+dy)+"px";
+  },50);
+
+  h.onclick=()=>{
+    score++;
+    document.getElementById("score").innerText=score;
+    clearInterval(speedInterval);
+    h.remove();
+    if(score===7){ clearInterval(gameInterval); clearInterval(timerInterval); next(3); }
+  };
+  gameArea.appendChild(h);
+  setTimeout(()=>{ clearInterval(speedInterval); h.remove(); },1500);
+}
 
 /* Fireworks */
 function fireworks(){setInterval(()=>{let f=document.createElement("div"); f.className="firework"; f.style.left=Math.random()*100+"vw"; f.style.top=Math.random()*60+"vh"; f.style.background=`hsl(${Math.random()*360},100%,50%)`; document.body.appendChild(f); setTimeout(()=>f.remove(),1200);},200);}
 
 /* Cake slice cutting */
+function initBirthdayPage(){
+  document.querySelectorAll("#cake .slice").forEach(s=>{
+    s.classList.remove("cut");
+    s.style.pointerEvents="auto";
+  });
+}
 function cutSlice(slice){
   if(slice.classList.contains("cut")) return;
   slice.classList.add("cut");
