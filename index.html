@@ -256,19 +256,35 @@ function checkCode(){if(code.value==="0802"){music.play(); fadeInMusic(); next(1
 
 /* Navigation */
 function next(n){
-  document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
   document.getElementById("s"+n).classList.add("active");
+
   if(n===2) startGame();
   if(n===4){ fireworks(); initBirthdayPage(); }
 }
 
 /* Floating hearts */
-setInterval(()=>{let h=document.createElement("div"); h.className="heart"; h.innerHTML="❤️"; h.style.left=Math.random()*100+"vw"; h.style.fontSize=Math.random()*22+14+"px"; document.body.appendChild(h); setTimeout(()=>h.remove(),6000);},350);
+setInterval(()=>{
+  let h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤️";
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=Math.random()*22+14+"px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},350);
 
 /* Countdown + auto birthday unlock */
 const target=new Date("2026-02-08T00:00:00").getTime();
-setInterval(()=>{let d=target-new Date().getTime(); if(d<=0){next(4); return;} timer.innerText=
-  Math.floor(d/86400000)+"d "+Math.floor((d%86400000)/3600000)+"h "+Math.floor((d%3600000)/60000)+"m "+Math.floor((d%60000)/1000)+"s";},1000);
+setInterval(()=>{
+  let d=target-new Date().getTime();
+  if(d<=0){next(4); return;}
+  timer.innerText=
+    Math.floor(d/86400000)+"d "+
+    Math.floor((d%86400000)/3600000)+"h "+
+    Math.floor((d%3600000)/60000)+"m "+
+    Math.floor((d%60000)/1000)+"s";
+},1000);
 
 /* Game - Hard mode */
 let score=0,time=30,gameInterval,timerInterval;
@@ -277,7 +293,7 @@ function startGame(){
   document.getElementById("score").innerText=score;
   document.getElementById("time").innerText=time;
   gameArea.innerHTML="";
-  gameInterval=setInterval(spawnHeart,600); // faster spawn
+  gameInterval=setInterval(spawnHeart,500); // faster spawn
   timerInterval=setInterval(()=>{
     time--;
     document.getElementById("time").innerText=time;
@@ -291,10 +307,11 @@ function spawnHeart(){
   h.innerHTML="💖";
   h.style.left=Math.random()*85+"%";
   h.style.top=Math.random()*75+"%";
-  // Hard mode: heart moves randomly
-  let dx=(Math.random()-0.5)*10;
-  let dy=(Math.random()-0.5)*10;
-  let speedInterval=setInterval(()=>{
+
+  // Hard mode: hearts move randomly
+  let dx=(Math.random()-0.5)*15;
+  let dy=(Math.random()-0.5)*15;
+  let moveInterval=setInterval(()=>{
     h.style.left=(h.offsetLeft+dx)+"px";
     h.style.top=(h.offsetTop+dy)+"px";
   },50);
@@ -302,18 +319,28 @@ function spawnHeart(){
   h.onclick=()=>{
     score++;
     document.getElementById("score").innerText=score;
-    clearInterval(speedInterval);
+    clearInterval(moveInterval);
     h.remove();
     if(score===7){ clearInterval(gameInterval); clearInterval(timerInterval); next(3); }
   };
   gameArea.appendChild(h);
-  setTimeout(()=>{ clearInterval(speedInterval); h.remove(); },1500);
+  setTimeout(()=>{ clearInterval(moveInterval); h.remove(); },1500);
 }
 
 /* Fireworks */
-function fireworks(){setInterval(()=>{let f=document.createElement("div"); f.className="firework"; f.style.left=Math.random()*100+"vw"; f.style.top=Math.random()*60+"vh"; f.style.background=`hsl(${Math.random()*360},100%,50%)`; document.body.appendChild(f); setTimeout(()=>f.remove(),1200);},200);}
+function fireworks(){
+  setInterval(()=>{
+    let f=document.createElement("div");
+    f.className="firework";
+    f.style.left=Math.random()*100+"vw";
+    f.style.top=Math.random()*60+"vh";
+    f.style.background=`hsl(${Math.random()*360},100%,50%)`;
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),1200);
+  },200);
+}
 
-/* Cake slice cutting */
+/* Birthday cake */
 function initBirthdayPage(){
   document.querySelectorAll("#cake .slice").forEach(s=>{
     s.classList.remove("cut");
@@ -325,11 +352,9 @@ function cutSlice(slice){
   slice.classList.add("cut");
   createConfetti(slice);
 }
-
-/* Confetti burst */
 function createConfetti(slice){
   for(let i=0;i<10;i++){
-    let c=document.createElement("div");
+    const c = document.createElement("div");
     c.className="confetti";
     c.style.left=(slice.offsetLeft + Math.random()*slice.offsetWidth)+"px";
     c.style.top=(slice.offsetTop)+"px";
